@@ -1,0 +1,18 @@
+# Compiled object files
+*.o
+
+# Executable
+clox
+
+# Debug symbols
+*.dSYM/
+
+# Editor backup files
+*~
+*.swp
+*.swo
+.vscode
+
+# OS-specific files
+.DS_Store
+Thumbs.db
