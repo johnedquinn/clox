@@ -9,9 +9,9 @@ DEBUG_FLAGS = -g -DDEBUG
 TARGET = clox
 
 # Source files
-SRCS = main.c chunk.c memory.c debug.c value.c
+SRCS = main.c chunk.c memory.c debug.c value.c vm.c
 OBJS = $(SRCS:.c=.o)
-HEADERS = common.h chunk.h memory.h debug.h value.h
+HEADERS = common.h chunk.h memory.h debug.h value.h vm.h
 
 # Default target
 all: $(TARGET)
