@@ -8,10 +8,10 @@ DEBUG_FLAGS = -g -DDEBUG
 # Target executable
 TARGET = clox
 
-# Source files
-SRCS = main.c chunk.c memory.c debug.c value.c vm.c scanner.c compiler.c
+# Source files (automatically detected)
+SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
-HEADERS = common.h chunk.h memory.h debug.h value.h vm.h scanner.h compiler.h
+HEADERS = $(wildcard *.h)
 
 # Default target
 all: $(TARGET)
