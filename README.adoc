@@ -1,3 +1,167 @@
-= Clox
+= clox: A Bytecode Virtual Machine for Lox
+:toc:
+:toc-placement!:
 
-See https://craftinginterpreters.com.
+A bytecode compiler and virtual machine implementation of the Lox programming language, written in C.
+
+toc::[]
+
+== Overview
+
+clox is a bytecode-based interpreter for the Lox programming language. Unlike tree-walk interpreters that directly execute an abstract syntax tree, clox compiles Lox source code into bytecode instructions and executes them on a stack-based virtual machine. This approach delivers significantly better performance while maintaining the simplicity and dynamic nature of Lox.
+
+This implementation follows the design presented in Part III of https://craftinginterpreters.com[Crafting Interpreters] by Robert Nystrom.
+
+== Architecture
+
+=== Components
+
+The clox implementation consists of several key components:
+
+==== Bytecode Compiler
+* **Scanner** (`scanner.c`/`scanner.h`) - Lexical analysis, tokenizes source code
+* **Compiler** (`compiler.c`/`compiler.h`) - Single-pass compiler that emits bytecode
+
+==== Virtual Machine
+* **VM** (`vm.c`/`vm.h`) - Stack-based bytecode interpreter with 256-element stack
+* **Chunk** (`chunk.c`/`chunk.h`) - Dynamic array of bytecode instructions
+* **Value** (`value.c`/`value.h`) - Tagged union representing Lox values (numbers, booleans, objects)
+
+==== Memory Management
+* **Object** (`object.c`/`object.h`) - Heap-allocated objects (strings, etc.)
+* **Memory** (`memory.c`/`memory.h`) - Memory allocation and object lifetime management
+* **Table** (`table.c`/`table.h`) - Hash table implementation for globals and string interning
+
+==== Debugging
+* **Debug** (`debug.c`/`debug.h`) - Bytecode disassembler for debugging and inspection
+
+=== Bytecode Instructions
+
+clox uses a compact bytecode instruction set including:
+
+* **Constants**: `OP_CONSTANT`, `OP_NIL`, `OP_TRUE`, `OP_FALSE`
+* **Variables**: `OP_GET_LOCAL`, `OP_SET_LOCAL`, `OP_GET_GLOBAL`, `OP_DEFINE_GLOBAL`, `OP_SET_GLOBAL`
+* **Operators**: `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_NEGATE`, `OP_NOT`
+* **Comparison**: `OP_EQUAL`, `OP_GREATER`, `OP_LESS`
+* **Control Flow**: `OP_RETURN`
+* **Statements**: `OP_PRINT`, `OP_POP`
+
+=== Virtual Machine Design
+
+The VM operates as a stack machine:
+
+* **Instruction Pointer (IP)**: Points to the next bytecode instruction to execute
+* **Stack**: 256-element array for operands and temporary values
+* **Globals Table**: Hash table for global variable storage
+* **String Interning**: Hash table for efficient string deduplication
+
+== Building
+
+clox uses a simple Makefile for building:
+
+[source,bash]
+----
+make
+----
+
+This compiles all source files and produces the `clox` executable.
+
+To clean build artifacts:
+
+[source,bash]
+----
+make clean
+----
+
+== Usage
+
+=== REPL Mode
+
+Run clox without arguments to start an interactive REPL (Read-Eval-Print Loop):
+
+[source,bash]
+----
+./clox
+----
+
+Example session:
+[source]
+----
+> print "Hello, world!";
+Hello, world!
+> var x = 10 + 5;
+> print x;
+15
+----
+
+=== Script Execution
+
+Execute a Lox script file:
+
+[source,bash]
+----
+./clox script.lox
+----
+
+=== Exit Codes
+
+* `0` - Successful execution
+* `64` - Usage error (incorrect command-line arguments)
+* `65` - Compilation error
+* `70` - Runtime error
+* `74` - I/O error (file not found or read error)
+
+== Language Features
+
+clox supports the core Lox language features including:
+
+* **Data Types**: Numbers (double-precision floating point), booleans, nil, strings
+* **Variables**: Global and local variable declaration and assignment
+* **Expressions**: Arithmetic, comparison, logical operators
+* **Statements**: Print statements, expression statements
+* **String Operations**: Concatenation with `+` operator
+
+== Implementation Highlights
+
+=== Single-Pass Compilation
+The compiler generates bytecode in a single pass without building an intermediate AST, making compilation fast and memory-efficient.
+
+=== String Interning
+All strings are interned in a hash table, allowing string equality comparisons to be performed by simple pointer comparison.
+
+=== Stack-Based Execution
+The VM uses a stack for all temporary values and expression evaluation, providing a simple and efficient execution model.
+
+== Development
+
+=== File Structure
+
+[source]
+----
+clox/
+├── main.c           # Entry point, REPL and file execution
+├── vm.[ch]          # Virtual machine implementation
+├── compiler.[ch]    # Bytecode compiler
+├── scanner.[ch]     # Lexical analyzer
+├── chunk.[ch]       # Bytecode chunk management
+├── value.[ch]       # Value representation
+├── object.[ch]      # Heap-allocated objects
+├── memory.[ch]      # Memory management
+├── table.[ch]       # Hash table implementation
+├── debug.[ch]       # Disassembler
+├── common.h         # Common definitions
+└── Makefile         # Build configuration
+----
+
+=== Debugging
+
+The debug module provides bytecode disassembly capabilities. This is useful for understanding the generated bytecode and debugging the compiler and VM.
+
+== Resources
+
+* https://craftinginterpreters.com[Crafting Interpreters] - The book that guides this implementation
+* https://craftinginterpreters.com/a-bytecode-virtual-machine.html[Part III: A Bytecode Virtual Machine] - Specific chapters covering clox
+
+== License
+
+This implementation is created following the Crafting Interpreters book. Please refer to the book's license terms for usage guidelines.
