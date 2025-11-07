@@ -1,0 +1,28 @@
+var x = 5;
+var y = 2;
+
+print "Initial value of x and y are:";
+print x;
+print y;
+
+if (false) {
+  y = 4;
+  print "!!! Should not happen";
+} else if (true) {
+  y = 6;
+  print "Updating y to 6";
+} else {
+  y = 8;
+  print "!!! Should not happen";
+}
+
+var z = x + y;
+
+if (z != 11) {
+  print "We failed!!! z was not 11. It was:";
+  print z;
+}
+
+print "The result of addition is:";
+print z;
+
