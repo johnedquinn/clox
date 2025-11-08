@@ -26,3 +26,14 @@ if (z != 11) {
 print "The result of addition is:";
 print z;
 
+var hundred = 1;
+while (hundred != 100) {
+  hundred = hundred + 1;
+}
+
+print "We've reached one hundred!";
+print hundred;
+
+for (var a = 1; a < 10; a = a + 1) {
+  print a;
+}
