@@ -43,3 +43,9 @@ fun areWeHavingItYet() {
 }
 
 print areWeHavingItYet;
+
+fun sum(a, b, c) {
+  print a + b + c;
+}
+
+sum(5, 6, 7);
