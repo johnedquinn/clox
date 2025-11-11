@@ -1,9 +1,15 @@
-var x = "global";
+
+var x = 0;
+
 fun outer() {
-  var x = "outer";
-  fun inner() {
-    print x;
+  var a = 1;
+  var b = 2;
+  fun middle() {
+    var c = 3;
+    var d = 4;
+    fun inner() {
+      print x + a + c + b + d;
+    }
   }
-  inner();
 }
 outer();
