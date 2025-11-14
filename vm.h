@@ -20,6 +20,7 @@ typedef struct {
     int frameCount;
     Value stack[STACK_MAX];
     Value* stackTop;
+    ObjUpvalue* openUpvalues;
     Obj* objects;
     Table globals;
     Table strings;

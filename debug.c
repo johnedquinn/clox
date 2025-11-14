@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 
-#include "value.h"
 #include "object.h"
+#include "value.h"
 
 void disassembleChunk(Chunk* chunk, const char* name) {
     printf("== %s ==\n", name);
@@ -77,6 +77,8 @@ int disassembleInstruction(Chunk* chunk, int offset) {
 
             return offset;
         }
+        case OP_CLOSE_UPVALUE:
+            return simpleInstruction("OP_CLOSE_UPVALUE", offset);
         case OP_RETURN:
             return simpleInstruction("OP_RETURN", offset);
         case OP_ADD:
