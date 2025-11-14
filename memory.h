@@ -19,6 +19,12 @@
 
 void* reallocate(void* pointer, size_t oldSize, size_t newSize);
 
+void markObject(Obj* object);
+
+/**
+ * Mark a value as _able_ to be referenced. This makes it so it doesn't get collected by GC.
+ */
+void markValue(Value value);
 void collectGarbage();
 
 void freeObjects();
