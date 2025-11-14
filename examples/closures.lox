@@ -1,17 +1,25 @@
-var globalSet;
+var globalVal = 10;
 var globalGet;
+var globalSet;
 
 fun main() {
-  var a = "initial";
+    var main_2 = "main_2_val";
 
-  fun set() { a = "updated"; }
-  fun get() { print a; }
+    fun nest_1(nest_1_param_1) {
+        main_2 = nest_1_param_1;
+    }
 
-  globalSet = set;
-  globalGet = get;
+    fun get() {
+        return main_2;
+    }
+
+    globalSet = nest_1;
+    globalGet = get;
 }
 
 main();
-globalSet();
-globalGet();
+
+print globalGet();
+globalSet(globalVal);
+print globalGet();
 
