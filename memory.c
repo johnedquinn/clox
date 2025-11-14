@@ -15,8 +15,13 @@
 
 void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
     vm.bytesAllocated += newSize - oldSize;
+#ifdef DEBUG_ALLOC
+    printf("[DEBUG] Reallocating from %zu to %zu at pointer %p.\n", oldSize,
+           newSize, (void*)pointer);
+#endif
     if (newSize > oldSize) {
 #ifdef DEBUG_STRESS_GC
+        printf("[DEBUG] Initiating GC from reallocate due to stress test.\n");
         collectGarbage();
 #endif
     }
@@ -32,6 +37,9 @@ void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
 
     void* result = realloc(pointer, newSize);
     if (result == NULL) exit(1);
+#ifdef DEBUG_ALLOC
+    printf("[DEBUG] Reallocated pointer is %p.\n", (void*)result);
+#endif
     return result;
 }
 
@@ -39,7 +47,7 @@ void markObject(Obj* object) {
     if (object == NULL) return;
     if (object->isMarked) return;
 #ifdef DEBUG_LOG_GC
-    printf("%p mark ", (void*)object);
+    printf("[DEBUG] %p mark ", (void*)object);
     printValue(OBJ_VAL(object));
     printf("\n");
 #endif
@@ -71,7 +79,7 @@ static void markArray(ValueArray* array) {
 
 static void blackenObject(Obj* object) {
 #ifdef DEBUG_LOG_GC
-    printf("%p blacken ", (void*)object);
+    printf("[DEBUG] %p blacken ", (void*)object);
     printValue(OBJ_VAL(object));
     printf("\n");
 #endif
@@ -102,7 +110,7 @@ static void blackenObject(Obj* object) {
 
 static void freeObject(Obj* object) {
 #ifdef DEBUG_LOG_GC
-    printf("%p free type %d\n", (void*)object, object->type);
+    printf("[DEBUG] %p free type %d\n", (void*)object, object->type);
 #endif
     switch (object->type) {
         // We only free the closure, not the function, since it doesn't _own_
@@ -128,7 +136,8 @@ static void freeObject(Obj* object) {
         }
         case OBJ_UPVALUE:
             ObjClosure* closure = (ObjClosure*)object;
-            FREE_ARRAY(ObjUpvalue*, closure->upvalues, closure->upvalueCount);
+            // TODO: Do I need this? FREE_ARRAY(ObjUpvalue*, closure->upvalues,
+            // closure->upvalueCount);
             FREE(ObjUpvalue, object);
             break;
     }
@@ -178,6 +187,9 @@ static void sweep() {
                 vm.objects = object;
             }
 
+#ifdef DEBUG_LOG_GC
+            printf("[DEBUG] Freeing object.\n");
+#endif
             freeObject(unreached);
         }
     }
@@ -185,7 +197,7 @@ static void sweep() {
 
 void collectGarbage() {
 #ifdef DEBUG_LOG_GC
-    printf("-- gc begin\n");
+    printf("[DEBUG] GC begin.\n");
     size_t before = vm.bytesAllocated;
 #endif
 
@@ -197,8 +209,8 @@ void collectGarbage() {
     vm.nextGC = vm.bytesAllocated * GC_HEAP_GROW_FACTOR;
 
 #ifdef DEBUG_LOG_GC
-    printf("-- gc end\n");
-    printf("   collected %zu bytes (from %zu to %zu) next at %zu\n",
+    printf("[DEBUG] GC end.\n");
+    printf("[DEBUG] GC collected %zu bytes (from %zu to %zu) next at %zu\n",
            before - vm.bytesAllocated, before, vm.bytesAllocated, vm.nextGC);
 #endif
 }

@@ -19,9 +19,9 @@ static Obj* allocateObject(size_t size, ObjType type) {
     object->type = type;
     object->isMarked = false;
     object->next = vm.objects;
-    // TODO: Check if we need to move around objects.
+    vm.objects = object;
 #ifdef DEBUG_LOG_GC
-    printf("%p allocate %zu for %d\n", (void*)object, size, type);
+    printf("[DEBUG] %p allocate %zu bytes for type %d\n", (void*)object, size, type);
 #endif
     return object;
 }
@@ -55,13 +55,17 @@ ObjNative* newNative(NativeFn function) {
 
 /**
  * Allocates a new ObjString.
+ * We make sure to push/pop on the VM so that GC doesn't steal the string from
+ * underneath us.
  */
 static ObjString* allocateString(char* chars, int length, uint32_t hash) {
     ObjString* string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
     string->length = length;
     string->chars = chars;
     string->hash = hash;
+    push(OBJ_VAL(string));
     tableSet(&vm.strings, string, NIL_VAL);
+    pop();
     return string;
 }
 

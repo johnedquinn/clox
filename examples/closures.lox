@@ -2,6 +2,8 @@ var globalVal = 10;
 var globalGet;
 var globalSet;
 
+print "Before main decl";
+
 fun main() {
     var main_2 = "main_2_val";
 
@@ -16,6 +18,8 @@ fun main() {
     globalSet = nest_1;
     globalGet = get;
 }
+
+print "After main decl";
 
 main();
 
