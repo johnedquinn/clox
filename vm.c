@@ -405,7 +405,7 @@ InterpretResult interpret(const char* source) {
     ObjFunction* function = compile(source);
     if (function == NULL) return INTERPRET_COMPILE_ERROR;
 #ifdef DEBUG_PRINT_CODE
-    printf("===== Done compiling source");
+    printf("===== Done compiling source.\n");
 #endif
 
     push(OBJ_VAL(function));

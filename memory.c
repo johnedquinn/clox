@@ -110,7 +110,11 @@ static void blackenObject(Obj* object) {
 
 static void freeObject(Obj* object) {
 #ifdef DEBUG_LOG_GC
-    printf("[DEBUG] %p free type %d\n", (void*)object, object->type);
+    Value v;
+    v.as.obj = object;
+    printf("[DEBUG] Freeing object (type %d) ", object->type);
+    printObject(v);
+    printf(" at %p.\n", (void*)object);
 #endif
     switch (object->type) {
         // We only free the closure, not the function, since it doesn't _own_
@@ -188,7 +192,11 @@ static void sweep() {
             }
 
 #ifdef DEBUG_LOG_GC
-            printf("[DEBUG] Freeing object.\n");
+            Value v;
+            v.as.obj = unreached;
+            printf("[DEBUG] Freeing object ");
+            printObject(v);
+            printf(" at %p.\n", (void*)unreached);
 #endif
             freeObject(unreached);
         }
