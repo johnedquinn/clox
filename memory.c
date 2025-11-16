@@ -84,6 +84,11 @@ static void blackenObject(Obj* object) {
     printf("\n");
 #endif
     switch (object->type) {
+        case OBJ_CLASS: {
+            ObjClass* klass = (ObjClass*)object;
+            markObject((Obj*)klass->name);
+            break;
+        }
         case OBJ_CLOSURE: {
             ObjClosure* closure = (ObjClosure*)object;
             markObject((Obj*)closure->function);
@@ -117,6 +122,11 @@ static void freeObject(Obj* object) {
     printf(" at %p.\n", (void*)object);
 #endif
     switch (object->type) {
+        case OBJ_CLASS: {
+            // TODO: What about the string? Prob not.
+            FREE(ObjClass, object);
+            break;
+        }
         // We only free the closure, not the function, since it doesn't _own_
         // the function.
         case OBJ_CLOSURE: {

@@ -21,9 +21,16 @@ static Obj* allocateObject(size_t size, ObjType type) {
     object->next = vm.objects;
     vm.objects = object;
 #ifdef DEBUG_LOG_GC
-    printf("[DEBUG] %p allocate %zu bytes for type %d\n", (void*)object, size, type);
+    printf("[DEBUG] %p allocate %zu bytes for type %d\n", (void*)object, size,
+           type);
 #endif
     return object;
+}
+
+ObjClass* newClass(ObjString* name) {
+    ObjClass* klass = ALLOCATE_OBJ(ObjClass, OBJ_CLASS);
+    klass->name = name;
+    return klass;
 }
 
 ObjClosure* newClosure(ObjFunction* function) {
@@ -125,6 +132,9 @@ static void printFunction(ObjFunction* function) {
 
 void printObject(Value value) {
     switch (OBJ_TYPE(value)) {
+        case OBJ_CLASS:
+            printf("%s", AS_CLASS(value)->name->chars);
+            break;
         case OBJ_CLOSURE:
             printFunction(AS_CLOSURE(value)->function);
             break;
